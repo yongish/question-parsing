@@ -9,7 +9,7 @@ import os
 
 # Assumes that an exercise is entirely contained in 1 page i.e. image.
 
-reader = easyocr.Reader(['ch_sim','en'], gpu=False)
+reader = easyocr.Reader(['ch_sim','en'])
 def getWordList(image):
   imgByteArr = io.BytesIO()
   image.save(imgByteArr, format=image.format)
