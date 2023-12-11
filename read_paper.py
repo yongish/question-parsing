@@ -17,7 +17,10 @@ def getWordList(image):
   words = reader.readtext(imgByteArr, detail=0)
   return words
 
-def process_duan(file, output_folder, image, words, last2pages):
+def process_exercise(exercise_type, file, output_folder, image, words, last2pages):
+  output_folder = os.path.join(exercise_type, output_folder)
+  Path(output_folder).mkdir(parents=True, exist_ok=True)
+
   # 1. Current image as raw text file.
   with open(os.path.join(output_folder, 'raw.txt'), 'w') as f:
     for word in words:
@@ -48,7 +51,7 @@ f = open('短文填空 procesed log.csv', 'a')
 writer = csv.writer(f)
 
 for i, file in enumerate(os.listdir(input_dir)):
-  print(f'{datetime.datetime.now()}. No.:{i}')
+  print(f'{datetime.datetime.now()}. file: {file}. No.:{i}')
 
   # todo: Skip files that have already been seen.
   filename = os.fsdecode(file)
@@ -58,29 +61,37 @@ for i, file in enumerate(os.listdir(input_dir)):
 
   filename_no_extension = Path(filename).stem
   output_folder = os.path.join('短文填空raw', filename_no_extension)
-  if os.path.exists(os.path.join(output_folder, 'last2pages.txt')):
+  # if os.path.exists(os.path.join(output_folder, 'last2pages.txt')):
+  if os.path.exists(os.path.join('选词填空raw', filename_no_extension, 'last2pages.txt')) and \
+    os.path.exists(os.path.join('短文填空raw', filename_no_extension, 'last2pages.txt')):
     continue
-  Path(output_folder).mkdir(parents=True)
 
   
   images = convert_from_path(os.path.join(input_dir, filename), dpi=500)
-  found = False
+  dfound = False
+  xfound = False
   for image in images[1:]:
   # for image in images[4:]:
     words = getWordList(image)
     for i, word in enumerate(words):
       if '短文填空' in word:
         # Process this words. Skip other images.
-        process_duan(os.path.join(input_dir, filename), output_folder, image, words, images[-2:])
+        process_exercise('短文填空raw', os.path.join(input_dir, filename), output_folder, image, words, images[-2:])
         writer.writerow([filename, True])
-        found = True
+        dfound = True
+        break
+      if '选词填空' in word:
+        # Process this words. Skip other images.
+        process_exercise('选词填空raw', os.path.join(input_dir, filename), output_folder, image, words, images[-2:])
+        writer.writerow([filename, True])
+        xfound = True
         break
     
-    if found:
+    if dfound and xfound:
       break
       
-  if ~found:
-    writer.writerow([filename, False])
+  # if ~dfound:
+  #   writer.writerow([filename, False])
     
   #
   # break
