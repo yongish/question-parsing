@@ -2,6 +2,7 @@ from pathlib import Path
 from pdf2image import convert_from_path
 from PyPDF2 import PdfWriter, PdfReader
 import csv
+import datetime
 import easyocr
 import io
 import os
@@ -46,12 +47,14 @@ input_dir = './pdfs'
 f = open('短文填空 procesed log.csv', 'a')
 writer = csv.writer(f)
 
-for file in os.listdir(input_dir):
+for i, file in enumerate(os.listdir(input_dir)):
+  print(f'{datetime.datetime.now()}. No.:{i}')
+
   # todo: Skip files that have already been seen.
   filename = os.fsdecode(file)
 
   #
-  filename = '2015-P6-Prelims-Chinese-CHIJ.pdf'
+  # filename = '2015-P6-Prelims-Chinese-CHIJ.pdf'
 
   filename_no_extension = Path(filename).stem
   output_folder = os.path.join('短文填空raw', filename_no_extension)
@@ -62,8 +65,8 @@ for file in os.listdir(input_dir):
   
   images = convert_from_path(os.path.join(input_dir, filename), dpi=500)
   found = False
-  # for image in images[1:]:
-  for image in images[4:]:
+  for image in images[1:]:
+  # for image in images[4:]:
     words = getWordList(image)
     for i, word in enumerate(words):
       if '短文填空' in word:
@@ -80,31 +83,6 @@ for file in os.listdir(input_dir):
     writer.writerow([filename, False])
     
   #
-  break
+  # break
  
 f.close() 
-  
-  # filename_no_extension = Path(filename).stem
-  # output_folder = './jpegs/' + filename_no_extension
-  # Path(output_folder).mkdir(parents=True, exist_ok=True)
-  # convert_from_path(
-  #   os.path.join(input_dir, filename),
-  #   dpi=500,
-  #   output_folder=output_folder,
-  #   fmt='jpeg',
-  #   jpegopt={
-  #     'quality': 100,
-  #     'progressive': False,
-  #     'optimize': False
-  #   },
-  #   output_file=filename_no_extension,
-  #   grayscale=True
-  # )
-  
-  
-# pdf_pages.save('temp', "JPEG")
-# pdf_pages.save()
-# for i, page in pdf_pages:
-#   print(page)
-#   filename = f"./page_{i}.jpg"
-#   page.save(filename, "JPEG")
