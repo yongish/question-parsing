@@ -25,7 +25,7 @@ def process(i, file):
   if file_extension != '.pdf':
     return
 
-print(f'index: {i} STARTED at {datetime.datetime.now()}. file: {file}')
+  print(f'index: {i} STARTED at {datetime.datetime.now()}. file: {file}')
 
   filepath = os.path.join(input_dir, file)
   pdffile = open(filepath, 'rb')
