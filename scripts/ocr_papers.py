@@ -17,7 +17,12 @@ def getWordList(image):
   words = reader.readtext(imgByteArr, detail=0)
   return words
 
-
+def cleanImage(image):
+  image = np.array(image)
+  thresh = cv2.threshold(image, 200, 255, cv2.THRESH_BINARY)[1]
+  median = cv2.medianBlur(thresh, 5)
+  return median
+  
 input_dir = './pdfs'
 # for i, file in enumerate(os.listdir(input_dir)):
 def process(i, file):
@@ -49,7 +54,7 @@ def process(i, file):
 
   images = convert_from_path(filepath, dpi=300)
   for page_number, image in enumerate(images[1:]):
-    words = getWordList(image)
+    words = getWordList(cleanImage(image))
     with open(os.path.join(output_folder, f'page{page_number + 1}.txt'), 'w') as f:
       for word in words:
         f.write(f'{word}\n')

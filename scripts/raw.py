@@ -30,7 +30,7 @@ for i, name_dir in enumerate(os.listdir(raw_dir)):
   pdf_filename = os.path.join('./pdfs', f'{name_dir}.pdf')
   shutil.copyfile(pdf_filename, os.path.join(output_dirname, f'{name_dir}.pdf'))
 
-  # 2. Save last 2 pages as a PDF file. Assume they are the answer key.
+  # 2. Save last 2 pages as a PDF file. Assume they are the answer key. NOT ALWAYS TRUE.
   inputpdf = PdfReader(open(pdf_filename, "rb"))
   output = PdfWriter()
   output.add_page(inputpdf.pages[-2])
