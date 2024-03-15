@@ -3,6 +3,7 @@ import json
 import pinyin_jyutping
 import pprint
 
+raw_dir = './raw'
 
 def process(filename):
     f = open(filename, 'r')

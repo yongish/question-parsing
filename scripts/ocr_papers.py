@@ -5,16 +5,14 @@ import easyocr
 import io
 import os
 import PyPDF2
-
+import numpy as np
+import cv2
 
 from joblib import Parallel, delayed
 
 reader = easyocr.Reader(['ch_sim','en'])
 def getWordList(image):
-  imgByteArr = io.BytesIO()
-  image.save(imgByteArr, format=image.format)
-  imgByteArr = imgByteArr.getvalue()
-  words = reader.readtext(imgByteArr, detail=0)
+  words = reader.readtext(image, detail=0)
   return words
 
 def cleanImage(image):
@@ -23,7 +21,7 @@ def cleanImage(image):
   median = cv2.medianBlur(thresh, 5)
   return median
   
-input_dir = './pdfs'
+input_dir = '../pdfs'
 # for i, file in enumerate(os.listdir(input_dir)):
 def process(i, file):
   filename_no_extension, file_extension = os.path.splitext(file)
@@ -40,7 +38,7 @@ def process(i, file):
   #
   # filename = '2015-P6-Prelims-Chinese-CHIJ.pdf'
 
-  output_folder = os.path.join('raw', filename_no_extension)
+  output_folder = os.path.join('../raw', filename_no_extension)
   #if os.exists(output_folder):
   # return
   Path(output_folder).mkdir(parents=True, exist_ok=True)

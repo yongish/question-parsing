@@ -1,3 +1,7 @@
+# Old script to prepare files for manual correction. On 3/14/24, we decided to use a custom React
+# admin app instead. Need a new script that combines this script with duan.py and xuan.py.
+# Backend needs to rerun duan.py and xuan.py everytime an edit is made. 
+
 from pathlib import Path
 from pdf2image import convert_from_path
 from PyPDF2 import PdfWriter, PdfReader
@@ -29,7 +33,7 @@ for i, name_dir in enumerate(os.listdir(raw_dir)):
   # 1. Copy original PDF file.
   pdf_filename = os.path.join('./pdfs', f'{name_dir}.pdf')
   shutil.copyfile(pdf_filename, os.path.join(output_dirname, f'{name_dir}.pdf'))
-
+  
   # 2. Save last 2 pages as a PDF file. Assume they are the answer key. NOT ALWAYS TRUE.
   inputpdf = PdfReader(open(pdf_filename, "rb"))
   output = PdfWriter()
