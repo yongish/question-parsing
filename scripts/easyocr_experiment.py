@@ -9,6 +9,8 @@ import io
 # 2. Find '短文填空'.
 # 3. 
 # 2. English OCR.
+# Save the processed img, 2nd last page, last page. 
+# 
 
 reader = easyocr.Reader(['ch_sim','en'])
 def getWordList(image):
@@ -35,3 +37,5 @@ ocr_string = getWordList(median)
 print(ocr_string)
 cv2.imshow('median', median)
 cv2.waitKey()
+
+
