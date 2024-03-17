@@ -57,4 +57,4 @@ def process(i, file):
   
   print(f'index: {i} ENDED at {datetime.datetime.now()}. file: {file}')
 
-Parallel(n_jobs=8)(delayed(process)(i, file) for i, file in enumerate(os.listdir(input_dir)))
+Parallel(n_jobs=7)(delayed(process)(i, file) for i, file in enumerate(os.listdir(input_dir)))
