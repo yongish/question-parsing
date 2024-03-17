@@ -2,7 +2,6 @@ import os
 import psycopg2
 
 password = os.environ.get('DB_PASSWORD')
-print(password)
 # Create a connection object to the database.
 conn = psycopg2.connect(database="postgres", user="postgres",
                         password=password, host="localhost", port="5432")

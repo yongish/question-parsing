@@ -23,28 +23,6 @@ conn = psycopg2.connect(database="postgres", user="postgres",
                         password=password, host="localhost", port="5432")
 cur = conn.cursor()
 
-# cur.execute("""
-#   INSERT INTO fill_blanks (
-#     source_url,
-#     page_number,
-#     raw_string,
-#     exercise_type_id,
-#     page_url,
-#     second_last_page_url,
-#     last_page_url
-#   ) VALUES (%s, %s, %s, %s, %s, %s, %s)""",
-#   (
-#     gitlab_prefix,
-#     1,
-#     '',
-#     0,
-#     gitlab_prefix,
-#     gitlab_prefix,
-#     gitlab_prefix,
-#   )
-# )
-# conn.commit()
-
 # for i, name_dir in enumerate(os.listdir(raw_dir)):
 for i, name_dir in enumerate(['2015-P6-Prelims-Chinese-Henry-Park']):
   print(i, name_dir)
@@ -79,6 +57,9 @@ for i, name_dir in enumerate(['2015-P6-Prelims-Chinese-Henry-Park']):
         found = True
         page_number = int(page_filename.split('page')[1].split('.txt')[0])
         pages[page_number].save(page_processed_filename, 'JPEG')
+        
+        print('URRRRLLLLLL', gitlab_prefix + page_processed_filename[3:])
+              
         # Write current file to DB.
         cur.execute("""
           INSERT INTO fill_blanks (
@@ -91,13 +72,13 @@ for i, name_dir in enumerate(['2015-P6-Prelims-Chinese-Henry-Park']):
             last_page_url
           ) VALUES (%s, %s, %s, %s, %s, %s, %s)""",
           (
-            gitlab_prefix + page_path,
+            gitlab_prefix + page_path[3:],
             page_number,
             contents,
             0,
-            gitlab_prefix + page_processed_filename,
-            gitlab_prefix + second_last_page_filename,
-            gitlab_prefix + last_page_filename,
+            gitlab_prefix + page_processed_filename[3:],
+            gitlab_prefix + second_last_page_filename[3:],
+            gitlab_prefix + last_page_filename[3:],
           )
         )
         conn.commit()
