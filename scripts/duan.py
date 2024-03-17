@@ -1,13 +1,9 @@
 import argparse
-import json
 import pinyin_jyutping
-import pprint
+# import json
+# import pprint
 
-raw_dir = './raw'
-
-def process(filename):
-    f = open(filename, 'r')
-    raw_passage = f.read()
+def getJson(raw_passage):
     raw_paragraphs = raw_passage.replace(' ','').split('\n')
     p = pinyin_jyutping.PinyinJyutping()
     choices = []
@@ -18,9 +14,6 @@ def process(filename):
         for (hanzi, solutions) in zip(all_solutions['word_list'], all_solutions['solutions']):
             choice['words'].append({'hanzi': hanzi, 'pinyin': solutions[0]})
         choices.append(choice)
-
-        # pinyin = p.pinyin(raw_paragraph)
-        # choices.append({'hanzi': raw_paragraph, 'pinyin': pinyin})
 
     passage = []
     question_index = 0
@@ -41,15 +34,24 @@ def process(filename):
             paragraph_list.append(word)
         passage.append(paragraph_list)
 
-    pp = pprint.PrettyPrinter()
-    pp.pprint(passage)
+    # pp = pprint.PrettyPrinter()
+    # pp.pprint(passage)
     output = {'numQuestions': question_index, 'choices': choices, 'passage': passage}
-
-    with open('data.json', 'w') as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
-
+    return str(output)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('filename')
+parser.add_argument('raw_passage')
 args = parser.parse_args()
-process(args.filename)
+print(getJson(args.raw_passage))
+
+# def process(filename):
+#     f = open(filename, 'r')
+#     raw_passage = f.read()
+#     output = getJson(raw_passage)
+#     with open('data.json', 'w') as f:
+#         json.dump(output, f, ensure_ascii=False, indent=2)
+
+# parser = argparse.ArgumentParser()
+# parser.add_argument('filename')
+# args = parser.parse_args()
+# process(args.filename)

@@ -25,6 +25,7 @@ input_dir = '../pdfs'
 # for i, file in enumerate(os.listdir(input_dir)):
 def process(i, file):
   filename_no_extension, file_extension = os.path.splitext(file)
+  output_folder = os.path.join('../raw', filename_no_extension)
   if file_extension != '.pdf':
     return
 
@@ -38,9 +39,6 @@ def process(i, file):
   #
   # filename = '2015-P6-Prelims-Chinese-CHIJ.pdf'
 
-  output_folder = os.path.join('../raw', filename_no_extension)
-  #if os.exists(output_folder):
-  # return
   Path(output_folder).mkdir(parents=True, exist_ok=True)
 
   numFiles = len([name for name in os.listdir(output_folder) if os.path.isfile(os.path.join(output_folder, name))])
@@ -51,7 +49,7 @@ def process(i, file):
     return
 
   images = convert_from_path(filepath, dpi=300)
-  for page_number, image in enumerate(images[1:]):
+  for page_number, image in enumerate(images[max(1, numFiles + 1):]):
     words = getWordList(cleanImage(image))
     with open(os.path.join(output_folder, f'page{page_number + 1}.txt'), 'w') as f:
       for word in words:
