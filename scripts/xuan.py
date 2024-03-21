@@ -3,13 +3,7 @@ import json
 import pinyin_jyutping
 import pprint
 
-
-def process(filename):
-    passage = []
-    p = pinyin_jyutping.PinyinJyutping()
-
-    f = open(filename, 'r')
-    raw_passage = f.read()
+def getJson(raw_passage):
     raw_paragraphs = raw_passage.replace(' ','').split('\n')
 
     question_index = 0
@@ -20,6 +14,8 @@ def process(filename):
 
     num_questions = 0
 
+    p = pinyin_jyutping.PinyinJyutping()
+    passage = []
     for raw_paragraph in raw_paragraphs:
         all_solutions = p.pinyin_all_solutions(raw_paragraph)
         # Assume every line starts with a tab.
@@ -72,9 +68,16 @@ def process(filename):
     pp = pprint.PrettyPrinter()
     pp.pprint(passage)
     output = {'numQuestions': int(num_questions), 'passage': passage}
+    return json.dumps(output, ensure_ascii=False, indent=2)
+
+def process(filename):
+    f = open(filename, 'r')
+    raw_passage = f.read()
+    
+    output = getJson(raw_passage)
 
     with open('data.json', 'w') as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
+        f.write(output)
 
 
 parser = argparse.ArgumentParser()

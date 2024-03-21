@@ -10,7 +10,7 @@ import psycopg2
 # Write to CSV file.
 # Write to DB.
 
-csvfile = open('procesed log.csv', 'w')
+csvfile = open('procesed log.csv', 'a')
 csvwriter = csv.writer(csvfile)
 raw_output_dir = '../exercises_raw'
 raw_dir = '../raw'
@@ -23,9 +23,11 @@ conn = psycopg2.connect(database="postgres", user="postgres",
                         password=password, host="localhost", port="5432")
 cur = conn.cursor()
 
-# for i, name_dir in enumerate(os.listdir(raw_dir)):
-for i, name_dir in enumerate(['2015-P6-Prelims-Chinese-Henry-Park']):
-  print(i, name_dir)
+dir_list = [f for f in os.listdir(raw_dir) if not f.startswith('.')]
+for i, name_dir in enumerate(dir_list):
+# for i, name_dir in enumerate(['2015-P6-Prelims-Chinese-Henry-Park']):
+# for i, name_dir in enumerate(['P6-Chinese-SA2-2007-Nanyang']):
+  print('{}, {} of {}'.format(name_dir, i, len(dir_list)))
 
   output_dirname = os.path.join(raw_output_dir, name_dir)
 
@@ -44,7 +46,6 @@ for i, name_dir in enumerate(['2015-P6-Prelims-Chinese-Henry-Park']):
   xuan_found = False
   page_dir = os.path.join(raw_dir, name_dir)
   for page_filename in os.listdir(page_dir):
-    print('page_filename', page_filename)
     page_path = os.path.join(page_dir, page_filename)
     with open(os.path.join(page_dir, page_filename)) as f:
       contents = f.read()
@@ -55,6 +56,7 @@ for i, name_dir in enumerate(['2015-P6-Prelims-Chinese-Henry-Park']):
         pages[page_number].save(page_processed_filename, 'JPEG')
         cur.execute("""
           INSERT INTO fill_blanks (
+            source,
             source_url,
             page_number,
             raw_string,
@@ -62,9 +64,11 @@ for i, name_dir in enumerate(['2015-P6-Prelims-Chinese-Henry-Park']):
             page_url,
             second_last_page_url,
             last_page_url
-          ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+          ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+          ON CONFLICT ON CONSTRAINT exercise_type DO NOTHING
           """,
           (
+            name_dir,
             gitlab_prefix + page_path[3:],
             page_number,
             contents,
@@ -82,6 +86,7 @@ for i, name_dir in enumerate(['2015-P6-Prelims-Chinese-Henry-Park']):
         pages[page_number].save(page_processed_filename, 'JPEG')
         cur.execute("""
           INSERT INTO fill_blanks (
+            source,
             source_url,
             page_number,
             raw_string,
@@ -89,9 +94,11 @@ for i, name_dir in enumerate(['2015-P6-Prelims-Chinese-Henry-Park']):
             page_url,
             second_last_page_url,
             last_page_url
-          ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+          ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+          ON CONFLICT ON CONSTRAINT exercise_type DO NOTHING
           """,
           (
+            name_dir,
             gitlab_prefix + page_path[3:],
             page_number,
             contents,
