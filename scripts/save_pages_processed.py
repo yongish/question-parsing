@@ -22,10 +22,7 @@ cur = conn.cursor()
 cur.execute("SELECT {} FROM fill_blanks".format(','.join(columns)))
 rows = cur.fetchall()
 
-Parallel(n_jobs=4)(delayed(process)(i, row) for i, row in enumerate(rows))
-
 # for i, row in enumerate(rows):
-
 def process(i, row):
     print(i, row)
     source = row[0]
@@ -55,4 +52,6 @@ def process(i, row):
         pages[-2].save(second_last_page_filename, 'JPEG')
         last_page_filename = os.path.join(output_dirname, 'last_page.jpg')
         pages[-1].save(last_page_filename, 'JPEG')
+    print()
 
+Parallel(n_jobs=8)(delayed(process)(i, row) for i, row in enumerate(rows))
